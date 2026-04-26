@@ -3,6 +3,7 @@ from fastapi.staticfiles import StaticFiles
 from fastapi.responses import FileResponse
 from pydantic import BaseModel
 from agents.coordinator import process_request
+from agents.pakistan_agent import process_pakistan_query, get_pakistan_corridors
 from agents.philippines_agent import process_philippines_query, get_supported_corridors
 from agents.indonesia_agent import process_indonesia_query, get_indonesia_corridors
 from database.firestore import get_tasks, get_events, get_notes, get_compliance
@@ -14,6 +15,11 @@ app.mount("/static", StaticFiles(directory="frontend"), name="static")
 
 class UserInput(BaseModel):
     message: str
+
+class PakistanInput(BaseModel):
+    message: str
+    source_country: str = None
+    corridor: str = None
 
 class PhilippinesInput(BaseModel):
     message: str
@@ -32,6 +38,11 @@ def chat(input: UserInput):
     result = process_request(input.message)
     return result
 
+@app.post("/chat/pakistan")
+def chat_pakistan(input: PakistanInput):
+    result = process_pakistan_query(input.message, input.source_country, input.corridor)
+    return result
+
 @app.post("/chat/philippines")
 def chat_philippines(input: PhilippinesInput):
     result = process_philippines_query(input.message, input.corridor)
@@ -41,6 +52,10 @@ def chat_philippines(input: PhilippinesInput):
 def chat_indonesia(input: IndonesiaInput):
     result = process_indonesia_query(input.message, input.corridor)
     return result
+
+@app.get("/corridors/pakistan")
+def pakistan_corridors():
+    return {"corridors": get_pakistan_corridors()}
 
 @app.get("/corridors/philippines")
 def philippines_corridors():
@@ -72,11 +87,12 @@ def health():
         "status": "RemitIQ 360 is running",
         "agents": ["pakistan_agent", "philippines_agent", "indonesia_agent"],
         "corridors": [
-            "PK→UAE", "PK→KSA", "PK→QAT",
+            "PK→UAE", "PK→KSA", "PK→QAT", "PK→UK", "PK→USA",
             "PH→UAE", "PH→KSA", "PH→HKG", "PH→QAT", "PH→KWT",
             "ID→UAE", "ID→KSA", "ID→MYR", "ID→QAT", "ID→KWT"
         ],
         "regulatory_db": "gs://remitiq-regulatory-docs/",
+        "firestore_db": "remitiq-db",
         "coming_soon": ["BD→UAE", "BD→KSA", "SG→IN (PayNow-UPI)"]
     }
 
