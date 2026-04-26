@@ -23,6 +23,36 @@ INJECTION_PATTERNS = [
     r"bypass",
     r"sudo mode",
     r"developer mode",
+    # Arabic
+    r"تجاهل",
+    r"تجاهل التعليمات",
+    r"أنت الآن",
+    r"تجاهل جميع",
+    r"تجاوز",
+    r"وضع المطور",
+    # Urdu
+    r"تمام ہدایات نظرانداز",
+    r"پچھلی ہدایات بھول",
+    r"سسٹم پرامپٹ",
+    r"بائی پاس کرو",
+    # Tagalog
+    r"huwag pansinin",
+    r"kalimutan.*instruksyon",
+    r"i-override",
+    r"laktawan",
+    r"bagong persona",
+    # Bahasa Indonesia
+    r"abaikan.*instruksi",
+    r"lupakan.*instruksi",
+    r"lewati.*instruksi",
+    r"persona baru",
+    r"mode pengembang",
+    r"abaikan semua",
+    # Bengali
+    r"সব নির্দেশ উপেক্ষা",
+    r"আগের নির্দেশ ভুলে যাও",
+    r"সিস্টেম প্রম্পট",
+    r"বাইপাস করো",
 ]
 
 # ── PII patterns ─────────────────────────────────────────────────────────────
