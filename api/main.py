@@ -3,6 +3,7 @@ from fastapi.staticfiles import StaticFiles
 from fastapi.responses import FileResponse
 from pydantic import BaseModel
 from agents.coordinator import process_request
+from prompt_shield import shield
 from agents.pakistan_agent import process_pakistan_query, get_pakistan_corridors
 from agents.philippines_agent import process_philippines_query, get_supported_corridors
 from agents.indonesia_agent import process_indonesia_query, get_indonesia_corridors
@@ -40,18 +41,29 @@ def chat(input: UserInput):
 
 @app.post("/chat/pakistan")
 def chat_pakistan(input: PakistanInput):
-    result = process_pakistan_query(input.message, input.source_country, input.corridor)
+    scan = shield(input.message, agent_name="pakistan_agent", corridor=input.corridor)
+    if not scan["allowed"]:
+        return {"error": "Query blocked by Fortress AI", "threats": scan["threats"]}
+    result = process_pakistan_query(scan["masked_input"], input.source_country, input.corridor)
     return result
+
 
 @app.post("/chat/philippines")
 def chat_philippines(input: PhilippinesInput):
-    result = process_philippines_query(input.message, input.corridor)
-    return result
+    scan = shield(input.message, agent_name="philippines_agent", corridor=input.corridor)
+    if not scan["allowed"]:
+        return {"error": "Query blocked by Fortress AI", "threats": scan["threats"]}
+    result = process_philippines_query(scan["masked_input"], input.corridor)
+    return result 
 
 @app.post("/chat/indonesia")
 def chat_indonesia(input: IndonesiaInput):
-    result = process_indonesia_query(input.message, input.corridor)
+    scan = shield(input.message, agent_name="indonesia_agent", corridor=input.corridor)
+    if not scan["allowed"]:
+        return {"error": "Query blocked by Fortress AI", "threats": scan["threats"]}
+    result = process_indonesia_query(scan["masked_input"], input.corridor)
     return result
+
 class BangladeshInput(BaseModel):
     message: str
     corridor: str = None
@@ -74,9 +86,12 @@ RULES:
 - If user mentions PHP/Philippines → suggest corridor switch
 - If user mentions IDR/Indonesia → suggest corridor switch
 Respond in English. If user writes in Bengali, respond in Bengali."""
+    scan = shield(input.message, agent_name="bangladesh_agent", corridor=input.corridor)
+    if not scan["allowed"]:
+        return {"error": "Query blocked by Fortress AI", "threats": scan["threats"]}
     response = client.models.generate_content(
         model="gemini-2.5-flash",
-        contents=f"System: {system_prompt}\n\nUser: {input.message}"
+        contents=f"System: {system_prompt}\n\nUser: {scan['masked_input']}"
     )
     return {"response": response.text}
 

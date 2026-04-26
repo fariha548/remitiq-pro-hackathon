@@ -117,6 +117,18 @@ def process_pakistan_query(user_input: str, source_country: str = None, corridor
             data["agent"] = "pakistan_agent"
             data["timestamp"] = timestamp
             data["rules_loaded"] = bool(rules)
+            try:
+                from fortress_logger import log_event
+                log_event(
+                    agent_name="pakistan_agent",
+                    event_type="rate_query",
+                    corridor=corridor or data.get("corridor", "unknown"),
+                    user_query=user_input[:100],
+                    response_summary=data.get("fee_guidance", "")[:100],
+                    severity="INFO"
+                )
+            except Exception:
+                pass
             return data
         except Exception as e:
             last_error = str(e)
