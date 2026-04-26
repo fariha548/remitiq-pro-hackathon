@@ -52,6 +52,37 @@ def chat_philippines(input: PhilippinesInput):
 def chat_indonesia(input: IndonesiaInput):
     result = process_indonesia_query(input.message, input.corridor)
     return result
+class BangladeshInput(BaseModel):
+    message: str
+    corridor: str = None
+
+@app.post("/chat/bangladesh")
+def chat_bangladesh(input: BangladeshInput):
+    from google import genai
+    import os
+    client = genai.Client(api_key=os.environ.get("GEMINI_API_KEY"))
+    system_prompt = """You are RemitIQ Bangladesh Expert Agent.
+You help Bangladeshi migrant workers in GCC send money home safely.
+CORRIDORS: AED→BDT, SAR→BDT, QAR→BDT, KWD→BDT, OMR→BDT, BHD→BDT
+RULES:
+- Always mention Bangladesh Bank 2.5% cash incentive on formal remittances
+- Recommend bKash or Nagad for last-mile delivery
+- Warn against hundi (informal) channels
+- Compare providers: Al Ansari, Al Rajhi, QNB, Wise, Western Union
+- Mention Probashi Kallyan Bank for subsidized rates
+- If user mentions PKR/Pakistan → suggest corridor switch
+- If user mentions PHP/Philippines → suggest corridor switch
+- If user mentions IDR/Indonesia → suggest corridor switch
+Respond in English. If user writes in Bengali, respond in Bengali."""
+    response = client.models.generate_content(
+        model="gemini-2.5-flash",
+        contents=f"System: {system_prompt}\n\nUser: {input.message}"
+    )
+    return {"response": response.text}
+
+@app.get("/corridors/bangladesh")
+def bangladesh_corridors():
+    return {"corridors": ["AED_BDT", "SAR_BDT", "QAR_BDT", "KWD_BDT", "OMR_BDT", "BHD_BDT"]}
 
 @app.get("/corridors/pakistan")
 def pakistan_corridors():
@@ -85,7 +116,7 @@ def compliance():
 def health():
     return {
         "status": "RemitIQ 360 is running",
-        "agents": ["pakistan_agent", "philippines_agent", "indonesia_agent"],
+        "agents": ["pakistan_agent", "philippines_agent", "indonesia_agent","bangladesh_agent"],
         "corridors": [
             "PK→UAE", "PK→KSA", "PK→QAT", "PK→UK", "PK→USA",
             "PH→UAE", "PH→KSA", "PH→HKG", "PH→QAT", "PH→KWT",
