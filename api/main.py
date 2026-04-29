@@ -1,3 +1,4 @@
+from google import genai
 from fastapi import FastAPI
 from fastapi.staticfiles import StaticFiles
 from fastapi.responses import FileResponse
@@ -45,6 +46,12 @@ def chat_pakistan(input: PakistanInput):
     scan = shield(input.message, agent_name="pakistan_agent", corridor=input.corridor)
     if not scan["allowed"]:
         return {"error": "Query blocked by Fortress AI", "threats": scan["threats"]}
+    import re
+    amounts = re.findall(r"([\d,]+)\s*(?:AED|SAR|USD)", input.message, re.IGNORECASE)
+    for amt in amounts:
+        if int(amt.replace(",","")) > 50000:
+            from agents.notification_agent import send_rate_alert
+            send_rate_alert("fariha80imr@gmail.com", [{"corridor":"LARGE_TXN","rate":int(amt.replace(",","")),"threshold":50000}])
     result = process_pakistan_query(scan["masked_input"], input.source_country, input.corridor)
     return result
 
@@ -242,15 +249,50 @@ def chat_ksa(input: KSAInput):
     scan = shield(input.message, agent_name="ksa_agent", corridor=input.corridor)
     if not scan["allowed"]:
         return {"error": "Query blocked by Fortress AI", "threats": scan["threats"]}
-    from ksa_agent_final import fortress_scan_ksa
-    result = fortress_scan_ksa(scan["masked_input"])
-    return result
+    client = genai.Client(vertexai=True, project="fortress-ai-remitiq-360", location="asia-southeast1")
+    prompt = f"""You are a KSA remittance expert. Answer in same language as question.
+Corridor: SAR->PKR. SAMA rules. VAT 15% on fees. Channels: STC Pay, Al Rajhi, Urpay.
+Question: {scan['masked_input']}"""
+    response = client.models.generate_content(model="gemini-2.5-flash", contents=prompt)
+    return {"response": response.text, "agent": "KSA", "corridor": input.corridor, "shield": scan}
 
 @app.post("/chat/uae")
 def chat_uae(input: UAEInput):
     scan = shield(input.message, agent_name="uae_agent", corridor=input.corridor)
     if not scan["allowed"]:
         return {"error": "Query blocked by Fortress AI", "threats": scan["threats"]}
-    from uae_agent_final import classify_user_intent
-    result = classify_user_intent(scan["masked_input"])
-    return result
+    client = genai.Client(vertexai=True, project="fortress-ai-remitiq-360", location="asia-southeast1")
+    prompt = f"""You are a UAE remittance expert. Answer in same language as question.
+Corridor: AED->PKR. CBUAE rules. Channels: Al Ansari, LuLu Exchange, Exchange4Free.
+Question: {scan['masked_input']}"""
+    response = client.models.generate_content(model="gemini-2.5-flash", contents=prompt)
+    return {"response": response.text, "agent": "UAE", "corridor": input.corridor, "shield": scan}
+
+@app.post("/chat/ksa/v2")
+def chat_ksa_v2(input: KSAInput):
+    scan = shield(input.message, agent_name="ksa_agent", corridor=input.corridor)
+    if not scan["allowed"]:
+        return {"error": "Query blocked by Fortress AI", "threats": scan["threats"]}
+    client = genai.Client(vertexai=True, project="fortress-ai-remitiq-360", location="asia-southeast1")
+    prompt = f"""You are a KSA remittance expert. Answer in the same language as the question.
+Corridor: SAR→PKR. SAMA rules apply. VAT 15% on fees.
+Channels: STC Pay, Al Rajhi, Urpay, Wise, Western Union.
+Question: {scan['masked_input']}"""
+    response = client.models.generate_content(model="gemini-2.5-flash", contents=prompt)
+    return {"response": response.text, "agent": "KSA", "corridor": input.corridor, "shield": scan}
+
+class ChinaInput(BaseModel):
+    message: str
+    corridor: str = "CNY_PKR"
+
+@app.post("/chat/china")
+def chat_china(input: ChinaInput):
+    scan = shield(input.message, agent_name="china_agent", corridor=input.corridor)
+    if not scan["allowed"]:
+        return {"error": "Query blocked by Fortress AI", "threats": scan["threats"]}
+    client = genai.Client(vertexai=True, project="fortress-ai-remitiq-360", location="asia-southeast1")
+    prompt = f"""You are a China remittance expert. Answer in same language as question.
+Corridor: CNY->PKR. SAFE/PBOC rules. Channels: Alipay, WeChat Pay, UnionPay, Western Union.
+Question: {scan['masked_input']}"""
+    response = client.models.generate_content(model="gemini-2.5-flash", contents=prompt)
+    return {"response": response.text, "agent": "China", "corridor": input.corridor, "shield": scan}
