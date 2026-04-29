@@ -126,6 +126,13 @@ body::after {
   white-space: nowrap;
 }
 
+@media (max-width: 1200px) {
+  .layout { grid-template-columns: 1fr 300px; }
+}
+@media (max-width: 900px) {
+  .layout { grid-template-columns: 1fr; }
+  .fortress { display: none; }
+}
 /* ── LAYOUT ────────────────────────────────────────── */
 .layout {
   position: relative; z-index: 1;
