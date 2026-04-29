@@ -6,3 +6,5 @@ google-cloud-firestore
 python-dotenv
 pydantic
 google-genai
+firebase-admin
+requests

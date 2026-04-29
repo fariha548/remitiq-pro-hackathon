@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>RemitIQ Pro — Multi-Agent Remittance System</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<style>
+.stat-card{transition:transform 0.2s ease,box-shadow 0.2s ease;}
+.stat-card:hover{transform:translateY(-3px);box-shadow:0 8px 25px rgba(0,0,0,0.15);}
+.send-btn{transition:all 0.2s ease;}
+.send-btn:hover{transform:scale(1.05);background:#f59e0b;}
+.item-card{transition:all 0.2s ease;}
+.item-card:hover{transform:translateX(3px);background:#dbeafe!important;}
+.nav-btn{transition:all 0.2s ease;}
+.nav-btn:hover{opacity:0.85;transform:scale(1.03);}
+.agent-row{transition:all 0.3s ease;}
+.agent-row:hover{background:rgba(255,255,255,0.1);border-radius:8px;padding-left:4px;}
+@media(max-width:768px){
+  .desktop-sidebar{display:none!important;}
+  .mobile-stats{display:flex!important;}
+  .chat-col{grid-column:span 4!important;}
+}
+</style>
+</head>
+<body class="bg-gray-100 min-h-screen">
+
+<nav class="bg-blue-950 text-white px-4 md:px-6 py-4 flex justify-between items-center shadow-xl">
+  <div>
+    <h1 class="text-lg md:text-xl font-bold text-yellow-400 tracking-wide">🏦 RemitIQ Pro</h1>
+    <p class="text-xs text-gray-300">Multi-Agent Remittance Operating System</p>
+  </div>
+  <div class="flex items-center gap-3">
+    <span class="text-xs text-gray-400 hidden md:block">Gemini 3 Flash · Google ADK · Cloud Run</span>
+    <span class="bg-green-500 px-3 py-1 rounded-full text-xs font-bold animate-pulse">● Live</span>
+  </div>
+</nav>
+
+<!-- Mobile Stats -->
+<div class="mobile-stats hidden bg-white border-b px-4 py-3 gap-4 overflow-x-auto shadow-sm">
+  <div class="text-center min-w-max stat-card p-2 rounded-lg">
+    <div id="mTaskCount" class="text-xl font-bold text-blue-950">0</div>
+    <div class="text-xs text-gray-500">Tasks</div>
+  </div>
+  <div class="text-center min-w-max stat-card p-2 rounded-lg">
+    <div id="mEventCount" class="text-xl font-bold text-yellow-600">0</div>
+    <div class="text-xs text-gray-500">Events</div>
+  </div>
+  <div class="text-center min-w-max stat-card p-2 rounded-lg">
+    <div id="mNoteCount" class="text-xl font-bold text-green-600">0</div>
+    <div class="text-xs text-gray-500">Notes</div>
+  </div>
+  <div class="text-center min-w-max stat-card p-2 rounded-lg">
+    <div id="mCompCount" class="text-xl font-bold text-red-600">0</div>
+    <div class="text-xs text-gray-500">Compliance</div>
+  </div>
+</div>
+
+<div class="max-w-7xl mx-auto p-3 md:p-4 grid grid-cols-4 gap-4 mt-4">
+
+  <!-- Left Sidebar -->
+  <div class="desktop-sidebar col-span-1 space-y-3">
+    <div class="bg-blue-950 text-white rounded-xl p-4 shadow-lg">
+      <h2 class="text-yellow-400 font-bold mb-4 text-xs tracking-widest">AGENT STATUS</h2>
+      <div class="space-y-3 text-xs">
+        <div class="agent-row flex items-center gap-2 p-1 cursor-default">
+          <span class="text-green-400 text-sm animate-pulse">●</span>
+          <div>
+            <div class="font-semibold">Primary Coordinator</div>
+            <div class="text-gray-400 text-xs">Orchestrating</div>
+          </div>
+        </div>
+        <div class="agent-row flex items-center gap-2 p-1 cursor-default">
+          <span class="text-green-400 text-sm">●</span>
+          <div>
+            <div class="font-semibold">Task Agent</div>
+            <div class="text-gray-400 text-xs">MCP Connected</div>
+          </div>
+        </div>
+        <div class="agent-row flex items-center gap-2 p-1 cursor-default">
+          <span class="text-green-400 text-sm">●</span>
+          <div>
+            <div class="font-semibold">Calendar Agent</div>
+            <div class="text-gray-400 text-xs">MCP Connected</div>
+          </div>
+        </div>
+        <div class="agent-row flex items-center gap-2 p-1 cursor-default">
+          <span class="text-green-400 text-sm">●</span>
+          <div>
+            <div class="font-semibold">Notes Agent</div>
+            <div class="text-gray-400 text-xs">MCP Connected</div>
+          </div>
+        </div>
+        <div class="agent-row flex items-center gap-2 p-1 cursor-default">
+          <span class="text-green-400 text-sm">●</span>
+          <div>
+            <div class="font-semibold">Compliance Agent</div>
+            <div class="text-gray-400 text-xs">MCP Connected</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="bg-white rounded-xl p-4 shadow">
+      <h2 class="text-blue-950 font-bold mb-3 text-xs tracking-widest">QUICK STATS</h2>
+      <div class="space-y-2">
+        <div class="stat-card bg-blue-50 rounded-xl p-3 text-center cursor-pointer border border-blue-100">
+          <div id="taskCount" class="text-3xl font-bold text-blue-950">0</div>
+          <div class="text-xs text-gray-500 mt-1">📋 Tasks</div>
+        </div>
+        <div class="stat-card bg-yellow-50 rounded-xl p-3 text-center cursor-pointer border border-yellow-100">
+          <div id="eventCount" class="text-3xl font-bold text-yellow-600">0</div>
+          <div class="text-xs text-gray-500 mt-1">📅 Events</div>
+        </div>
+        <div class="stat-card bg-green-50 rounded-xl p-3 text-center cursor-pointer border border-green-100">
+          <div id="noteCount" class="text-3xl font-bold text-green-600">0</div>
+          <div class="text-xs text-gray-500 mt-1">📝 Notes</div>
+        </div>
+        <div class="stat-card bg-red-50 rounded-xl p-3 text-center cursor-pointer border border-red-100">
+          <div id="complianceCount" class="text-3xl font-bold text-red-600">0</div>
+          <div class="text-xs text-gray-500 mt-1">⚖️ Compliance</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Main Chat -->
+  <div class="col-span-4 md:col-span-2 bg-white rounded-xl shadow-lg flex flex-col chat-col">
+    <div class="bg-blue-950 px-4 py-3 rounded-t-xl flex justify-between items-center">
+      <div>
+        <div class="text-yellow-400 font-bold text-sm">🤖 RemitIQ Pro Coordinator</div>
+        <div class="text-gray-400 text-xs">Powered by Gemini 3 Flash Preview</div>
+      </div>
+      <div class="bg-green-500 text-white text-xs px-2 py-1 rounded-full">Active</div>
+    </div>
+    <div id="chatBox" class="flex-1 p-4 overflow-y-auto space-y-3 h-80 md:h-96">
+      <div class="bg-blue-50 rounded-xl p-3 text-sm text-blue-950 border-l-4 border-yellow-400">
+        <strong class="text-blue-950">🏦 RemitIQ Pro:</strong> Assalam o Alaikum! I am your AI Remittance Operations Coordinator. Tell me about your tasks, meetings, SBP deadlines, or MTO partner information — I will coordinate everything automatically across all agents.
+      </div>
+    </div>
+    <div class="p-4 border-t bg-gray-50 rounded-b-xl">
+      <div class="flex gap-2">
+        <input id="userInput" type="text"
+          placeholder="e.g. Al Ansari meeting kal 3 baje, KYC review Friday tak..."
+          class="flex-1 border border-gray-300 rounded-xl px-4 py-2 text-sm focus:outline-none focus:border-yellow-400 focus:ring-2 focus:ring-yellow-100 transition">
+        <button onclick="sendMessage()" class="send-btn bg-yellow-400 text-blue-950 font-bold px-5 py-2 rounded-xl text-sm shadow-md">
+          Send ➤
+        </button>
+      </div>
+      <div class="flex gap-2 mt-3 flex-wrap">
+        <button onclick="quickDemo()" class="nav-btn bg-blue-950 text-white text-xs px-3 py-1.5 rounded-lg shadow">
+          📋 Try Demo
+        </button>
+        <button onclick="loadData()" class="nav-btn bg-gray-200 text-gray-700 text-xs px-3 py-1.5 rounded-lg">
+          🔄 Refresh
+        </button>
+        <button onclick="searchData()" class="nav-btn bg-green-600 text-white text-xs px-3 py-1.5 rounded-lg shadow">
+          🔍 Search
+        </button>
+        <button onclick="clearChat()" class="nav-btn bg-red-100 text-red-600 text-xs px-3 py-1.5 rounded-lg">
+          🗑️ Clear
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Right Sidebar -->
+  <div class="desktop-sidebar col-span-1 space-y-3 overflow-y-auto" style="max-height:85vh;">
+    <div class="bg-white rounded-xl shadow p-4">
+      <h2 class="text-blue-950 font-bold mb-3 text-xs tracking-widest border-b pb-2">📋 RECENT TASKS</h2>
+      <div id="taskList"><span class="text-gray-400 italic text-xs">No tasks yet</span></div>
+    </div>
+    <div class="bg-white rounded-xl shadow p-4">
+      <h2 class="text-blue-950 font-bold mb-3 text-xs tracking-widest border-b pb-2">📅 UPCOMING EVENTS</h2>
+      <div id="eventList"><span class="text-gray-400 italic text-xs">No events yet</span></div>
+    </div>
+    <div class="bg-white rounded-xl shadow p-4">
+      <h2 class="text-blue-950 font-bold mb-3 text-xs tracking-widest border-b pb-2">📝 SAVED NOTES</h2>
+      <div id="noteList"><span class="text-gray-400 italic text-xs">No notes yet</span></div>
+    </div>
+    <div class="bg-white rounded-xl shadow p-4">
+      <h2 class="text-blue-950 font-bold mb-3 text-xs tracking-widest border-b pb-2">⚖️ COMPLIANCE</h2>
+      <div id="complianceList"><span class="text-gray-400 italic text-xs">No items yet</span></div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+let allData={tasks:[],events:[],notes:[],compliance:[]};
+
+async function sendMessage(){
+  const input=document.getElementById('userInput');
+  const msg=input.value.trim();
+  if(!msg)return;
+  addMessage('You',msg,'user');
+  input.value='';
+  addMessage('RemitIQ Pro','⏳ All agents coordinating...','loading');
+  try{
+    const res=await fetch('/chat',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({message:msg})});
+    const data=await res.json();
+    removeLoading();
+    if(data.error){addMessage('RemitIQ Pro','❌ '+data.error,'error');return;}
+    let reply=(data.summary||'Done!')+ '\n\n';
+    if(data.results&&Array.isArray(data.results)&&data.results.length>0){
+      reply+=data.results.filter(r=>typeof r==='string').join('\n');
+    }
+    addMessage('RemitIQ Pro',reply,'bot');
+    await loadData();
+  }catch(e){
+    removeLoading();
+    addMessage('RemitIQ Pro','❌ Connection error. Please try again.','error');
+  }
+}
+
+function addMessage(sender,text,type){
+  const box=document.getElementById('chatBox');
+  const div=document.createElement('div');
+  if(type==='user'){
+    div.className='bg-yellow-50 rounded-xl p-3 text-sm text-right border-r-4 border-yellow-400 ml-8';
+    div.innerHTML='<strong class="text-yellow-600">You:</strong> '+text;
+  }else if(type==='bot'){
+    div.className='bg-blue-50 rounded-xl p-3 text-sm whitespace-pre-line border-l-4 border-blue-400 mr-8';
+    div.innerHTML='<strong class="text-blue-950">🏦 RemitIQ Pro:</strong> '+text;
+  }else if(type==='loading'){
+    div.className='bg-gray-50 rounded-xl p-3 text-sm text-gray-400 loading-msg border-l-4 border-gray-300';
+    div.innerHTML='<strong>🤖 RemitIQ Pro:</strong> '+text;
+  }else{
+    div.className='bg-red-50 rounded-xl p-3 text-sm text-red-600 border-l-4 border-red-400';
+    div.innerHTML='<strong>⚠️ Error:</strong> '+text;
+  }
+  box.appendChild(div);
+  box.scrollTop=box.scrollHeight;
+}
+
+function removeLoading(){
+  const el=document.querySelector('.loading-msg');
+  if(el)el.remove();
+}
+
+function clearChat(){
+  document.getElementById('chatBox').innerHTML='<div class="bg-blue-50 rounded-xl p-3 text-sm text-blue-950 border-l-4 border-yellow-400"><strong>🏦 RemitIQ Pro:</strong> Chat cleared. How can I help you?</div>';
+}
+
+async function loadData(){
+  try{
+    const[t,e,n,c]=await Promise.all([
+      fetch('/tasks').then(r=>r.json()),
+      fetch('/events').then(r=>r.json()),
+      fetch('/notes').then(r=>r.json()),
+      fetch('/compliance').then(r=>r.json())
+    ]);
+    allData.tasks=Array.isArray(t.tasks)?t.tasks:[];
+    allData.events=Array.isArray(e.events)?e.events:[];
+    allData.notes=Array.isArray(n.notes)?n.notes:[];
+    allData.compliance=Array.isArray(c.compliance)?c.compliance:[];
+    updateUI();
+  }catch(e){console.log('Load error:',e);}
+}
+
+function updateUI(){
+  const{tasks,events,notes,compliance}=allData;
+  setCount('taskCount',tasks.length);
+  setCount('eventCount',events.length);
+  setCount('noteCount',notes.length);
+  setCount('complianceCount',compliance.length);
+  setCount('mTaskCount',tasks.length);
+  setCount('mEventCount',events.length);
+  setCount('mNoteCount',notes.length);
+  setCount('mCompCount',compliance.length);
+  renderList('taskList',tasks,'title','bg-blue-50','border-blue-200');
+  renderList('eventList',events,'title','bg-yellow-50','border-yellow-200');
+  renderList('noteList',notes,'title','bg-green-50','border-green-200');
+  renderList('complianceList',compliance,'title','bg-red-50','border-red-200');
+}
+
+function setCount(id,val){
+  const el=document.getElementById(id);
+  if(el)el.textContent=val;
+}
+
+function renderList(listId,items,key,bgColor,borderColor){
+  const el=document.getElementById(listId);
+  if(!el)return;
+  if(!items||items.length===0){
+    el.innerHTML='<span class="text-gray-400 italic text-xs">No items yet</span>';
+    return;
+  }
+  const unique=[];
+  const seen=new Set();
+  for(const item of items){
+    const val=item[key]||item.content||'Item';
+    if(!seen.has(val)){seen.add(val);unique.push(item);}
+  }
+  el.innerHTML=unique.slice(-5).reverse().map(item=>{
+    const title=item.title||item.content||'Item';
+    const sub=item.due_date||item.date||item.deadline||item.category||'';
+    const priority=item.priority?'<span class="text-xs px-1 py-0.5 rounded bg-red-100 text-red-600 ml-1">'+item.priority+'</span>':'';
+    return '<div class="item-card '+bgColor+' rounded-lg p-2 mb-1 border '+borderColor+' cursor-pointer">'+
+      '<div class="font-medium text-gray-800 text-xs truncate">'+title+priority+'</div>'+
+      (sub?'<div class="text-gray-500 text-xs mt-0.5">📌 '+sub+'</div>':'')+
+      '</div>';
+  }).join('');
+}
+
+function searchData(){
+  const query=prompt('🔍 Search tasks, events, notes, or compliance:');
+  if(!query)return;
+  const q=query.toLowerCase();
+  const results=[];
+  [...allData.tasks,...allData.events,...allData.notes,...allData.compliance].forEach(item=>{
+    const text=JSON.stringify(item).toLowerCase();
+    if(text.includes(q)){results.push('• '+(item.title||item.content||'Item'));}
+  });
+  if(results.length>0){
+    addMessage('RemitIQ Pro','🔍 Results for "'+query+'":\n'+results.join('\n'),'bot');
+  }else{
+    addMessage('RemitIQ Pro','🔍 No results found for "'+query+'"','bot');
+  }
+}
+
+function quickDemo(){
+  document.getElementById('userInput').value='Al Ansari Exchange se kal 3 baje meeting hai UAE corridor ke baare mein. Unka KYC review Friday tak complete karna hai. SBP monthly report bhi Friday ko due hai. Notes mein save karo ke unka main contact Ahmed Ali hai.';
+}
+
+document.getElementById('userInput').addEventListener('keypress',function(e){
+  if(e.key==='Enter')sendMessage();
+});
+
+loadData();
+</script>
+</body>
+</html>
