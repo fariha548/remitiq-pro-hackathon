@@ -73,7 +73,7 @@ class BangladeshInput(BaseModel):
 def chat_bangladesh(input: BangladeshInput):
     from google import genai
     import os
-    client = genai.Client(api_key=os.environ.get("GEMINI_API_KEY"))
+    client = genai.Client(vertexai=True, project="fortress-ai-remitiq-360", location="asia-southeast1")
     system_prompt = """You are RemitIQ Bangladesh Expert Agent.
 FINANCIAL GLOSSARY (Bengali/Bangla):
 - Exchange Rate = বিনিময় হার (Binimoẏ Hār)
@@ -228,3 +228,29 @@ def rate_corridors():
 
 if __name__ == "__main__":
     uvicorn.run(app, host="0.0.0.0", port=8080)
+
+class KSAInput(BaseModel):
+    message: str
+    corridor: str = "SAR_PKR"
+
+class UAEInput(BaseModel):
+    message: str
+    corridor: str = "AED_PKR"
+
+@app.post("/chat/ksa")
+def chat_ksa(input: KSAInput):
+    scan = shield(input.message, agent_name="ksa_agent", corridor=input.corridor)
+    if not scan["allowed"]:
+        return {"error": "Query blocked by Fortress AI", "threats": scan["threats"]}
+    from ksa_agent_final import fortress_scan_ksa
+    result = fortress_scan_ksa(scan["masked_input"])
+    return result
+
+@app.post("/chat/uae")
+def chat_uae(input: UAEInput):
+    scan = shield(input.message, agent_name="uae_agent", corridor=input.corridor)
+    if not scan["allowed"]:
+        return {"error": "Query blocked by Fortress AI", "threats": scan["threats"]}
+    from uae_agent_final import classify_user_intent
+    result = classify_user_intent(scan["masked_input"])
+    return result

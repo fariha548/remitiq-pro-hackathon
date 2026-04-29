@@ -5,7 +5,7 @@ import json
 import re
 from datetime import datetime
 
-client = genai.Client(api_key=os.environ.get("GEMINI_API_KEY"))
+client = genai.Client(vertexai=True, project="fortress-ai-remitiq-360", location="asia-southeast1")
 db = firestore.Client(project="remitiq-agent", database="remitiq-db")
 
 MODELS = [

@@ -7,7 +7,7 @@ from tools.compliance_mcp import create_compliance, list_compliance
 import json
 import re
 
-client = genai.Client(api_key=os.environ.get("GEMINI_API_KEY"))
+client = genai.Client(vertexai=True, project="fortress-ai-remitiq-360", location="asia-southeast1")
 
 MODELS = [
     "gemini-3-flash-preview",
