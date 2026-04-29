@@ -131,7 +131,7 @@ body::after {
   position: relative; z-index: 1;
   margin-top: 54px;
   display: grid;
-  grid-template-columns: 1fr 390px;
+  grid-template-columns: 1fr minmax(0, 390px);
   grid-template-rows: 50px 1fr 58px;
   height: calc(100vh - 54px);
 }
@@ -403,6 +403,8 @@ body::after {
 /* ── FORTRESS PANEL ────────────────────────────────── */
 .fortress {
   grid-column: 2; grid-row: 1 / 4;
+  min-width: 0;
+  width: 100%;
   background: var(--obsidian-2);
   border-left: 1px solid var(--glass-border);
   display: flex; flex-direction: column;
