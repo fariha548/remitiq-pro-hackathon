@@ -562,6 +562,15 @@ body::after {
     <button class="tab" onclick="switchTab('bd',this)" data-kb="⬡ Bangladesh Bank · BMET Rules · bKash/Nagad · 2.5% Cash Incentive">
       <span class="tab-flag">🇧🇩</span> Bangladesh
     </button>
+    <button class="tab" onclick="switchTab('uae',this)" data-kb="⬡ CBUAE Rules · MOHRE WPS · Al Ansari · LuLu · Exchange4Free · AED→PKR">
+      <span class="tab-flag">🇦🇪</span> UAE
+    </button>
+    <button class="tab" onclick="switchTab('ksa',this)" data-kb="⬡ SAMA Rules · VAT 15% · STC Pay · Al Rajhi · Urpay · SAR→PKR">
+      <span class="tab-flag">🇸🇦</span> Saudi Arabia
+    </button>
+    <button class="tab" onclick="switchTab('cn',this)" data-kb="⬡ SAFE/PBOC Quota · PIPL · AliPay · WeChat · UnionPay · CNY→PKR">
+      <span class="tab-flag">🇨🇳</span> China
+    </button>
     <div class="kb-tag" id="kbTag">⬡ SBP EPD Circulars 2024-25 · AML/CFT Rules · WPS · NICOP/CNIC KYC</div>
   </div>
 
@@ -819,6 +828,72 @@ const TABS = {
       { icon:'✅', label:'BB Incentive', text:'2.5% cash bonus on inward remittances via formal channels' },
       { icon:'✅', label:'bKash/Nagad', text:'Instant last-mile mobile delivery across Bangladesh' },
       { icon:'🔍', label:'Wage Bond', text:'12% p.a. tax-free Wage Earner Bond — checking eligibility...' }
+    ]
+  },
+  uae: {
+    ep: "/chat/uae",
+    agent: "UAE Agent · CBUAE",
+    corridor: "AED→PKR",
+    kb: "⬡ CBUAE Rules · MOHRE WPS · Al Ansari · LuLu · Exchange4Free",
+    greeting: [
+      "🏦 <strong>Assalam-o-Alaikum!</strong> UAE Remittance Intelligence Agent ready.",
+      "",
+      "✓ Corridors: AED → PKR",
+      "✓ Compliance: CBUAE · MOHRE WPS",
+      "✓ Channels: Al Ansari · LuLu · Exchange4Free · Western Union",
+      "✓ Special: Zero-fee transfers via Exchange4Free",
+      "",
+      "<span style=\"color:var(--text-secondary);font-size:11px\">Ask about AED rates, CBUAE limits, or best transfer channel.</span>",
+      "<span style=\"color:var(--text-dim);font-size:10.5px;font-family:'JetBrains Mono',monospace\">Protected by Fortress AI · Real-time scanning, masking & policy checks on every query</span>"
+    ].join("<br>"),
+    rules: [
+      { icon:"✅", label:"CBUAE Rule", text:"Single txn limit AED 50,000 · Annual AED 1,000,000" },
+      { icon:"✅", label:"Exchange4Free", text:"Zero fee online transfers — best rate for AED→PKR" },
+      { icon:"🔍", label:"MOHRE WPS", text:"Salary via Wages Protection System — checking compliance..." }
+    ]
+  },
+  ksa: {
+    ep: "/chat/ksa",
+    agent: "KSA Agent · SAMA",
+    corridor: "SAR→PKR",
+    kb: "⬡ SAMA Rules · VAT 15% · STC Pay · Al Rajhi · Urpay · WPS",
+    greeting: [
+      "🏦 <strong>Assalam-o-Alaikum!</strong> KSA Remittance Intelligence Agent ready.",
+      "",
+      "✓ Corridors: SAR → PKR",
+      "✓ Compliance: SAMA · VAT 15% · Absher",
+      "✓ Channels: STC Pay · Al Rajhi · Urpay · Wise · Western Union",
+      "✓ Special: Vision 2030 preferred rails",
+      "",
+      "<span style=\"color:var(--text-secondary);font-size:11px\">Ask about SAR rates, SAMA limits, VAT on fees, or STC Pay.</span>",
+      "<span style=\"color:var(--text-dim);font-size:10.5px;font-family:'JetBrains Mono',monospace\">Protected by Fortress AI · Real-time scanning, masking & policy checks on every query</span>"
+    ].join("<br>"),
+    rules: [
+      { icon:"✅", label:"SAMA Rule", text:"15% VAT on service fee only · Not on principal amount" },
+      { icon:"✅", label:"STC Pay", text:"Fastest rail for SAR→PKR · Vision 2030 preferred" },
+      { icon:"🔍", label:"Absher KYC", text:"Iqama verification required above SAR 20,000" }
+    ]
+  },
+  cn: {
+    ep: "/chat/china",
+    agent: "China Agent · SAFE/PBOC",
+    corridor: "CNY→PKR",
+    kb: "⬡ SAFE Quota · PIPL Zero-Retention · AliPay · WeChat · UnionPay · Academic Calendar",
+    greeting: [
+      "🏦 <strong>您好!</strong> China Remittance Intelligence Agent ready.",
+      "",
+      "✓ Corridors: CNY → PKR",
+      "✓ Compliance: SAFE Quota ¥500k annual · PIPL Privacy",
+      "✓ Channels: AliPay · WeChat Pay · UnionPay",
+      "✓ Special: Academic calendar Feb/Sep semester advice",
+      "",
+      "<span style=\"color:var(--text-secondary);font-size:11px\">Ask about CNY rates, SAFE quota, AliPay transfers, or tuition fees.</span>",
+      "<span style=\"color:var(--text-dim);font-size:10.5px;font-family:'JetBrains Mono',monospace\">Protected by Fortress AI · Real-time scanning, masking & policy checks on every query</span>"
+    ].join("<br>"),
+    rules: [
+      { icon:"✅", label:"SAFE Quota", text:"Annual individual limit ¥500,000 · Single txn ¥50,000" },
+      { icon:"✅", label:"AliPay", text:"Fastest channel · ¥200k daily limit · Weekend available" },
+      { icon:"📅", label:"Academic", text:"Feb/Sep semesters · Transfer 4 weeks before deadline" }
     ]
   }
 };

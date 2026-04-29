@@ -4,6 +4,7 @@ from fastapi.responses import FileResponse
 from pydantic import BaseModel
 from agents.coordinator import process_request
 from prompt_shield import shield
+from rate_monitor import run_rate_check, get_live_rate
 from agents.pakistan_agent import process_pakistan_query, get_pakistan_corridors
 from agents.philippines_agent import process_philippines_query, get_supported_corridors
 from agents.indonesia_agent import process_indonesia_query, get_indonesia_corridors
@@ -201,6 +202,29 @@ def health():
         "firestore_db": "remitiq-db",
         "coming_soon": ["BD→UAE", "BD→KSA", "SG→IN (PayNow-UPI)"]
     }
+
+@app.get("/rates/live/{from_currency}/{to_currency}")
+def live_rate(from_currency: str, to_currency: str):
+    return get_live_rate(from_currency.upper(), to_currency.upper())
+
+@app.post("/rates/check")
+def rate_check():
+    return run_rate_check()
+
+@app.get("/rates/corridors")
+def rate_corridors():
+    return {
+        "corridors": [
+            "AED_PKR", "SAR_PKR",
+            "AED_PHP", "SAR_PHP", 
+            "AED_IDR", "SAR_IDR",
+            "AED_BDT", "SAR_BDT"
+        ],
+        "monitor": "active",
+        "interval": "5 minutes",
+        "alerts": "Gmail SMTP"
+    }
+
 
 if __name__ == "__main__":
     uvicorn.run(app, host="0.0.0.0", port=8080)
