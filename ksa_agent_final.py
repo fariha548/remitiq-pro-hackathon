@@ -22,7 +22,6 @@ from datetime import datetime
 from typing import Any
 
 from google.adk.agents import Agent
-from google.adk.tools import google_search
 import firebase_admin
 from firebase_admin import firestore
 
@@ -532,7 +531,7 @@ def get_ksa_compliance_info(topic: str) -> dict:
 # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 ksa_agent = Agent(
     name="ksa_remittance_agent",
-    model="gemini-2.0-flash",
+    model="gemini-2.5-flash",
     description=(
         "KSA Vision 2030 Specialist — Saudi Arabia remittance corridor agent. "
         "Covers SAR → PKR, BDT, PHP, IDR. "
@@ -555,14 +554,13 @@ YOUR 8 TOOLS — USE THEM:
 6. fortress_scan_ksa()         — Iqama PII masking + MENA scam detection
 7. compare_providers_sar()     — SAMA-licensed provider comparison
 8. get_ksa_compliance_info()   — Full regulatory reference (topic-based)
-+ google_search                — Live SAR exchange rates
++                 — Live SAR exchange rates
 
 MANDATORY TOOL TRIGGERS:
 - Any fee/charge mentioned → calculate_vat_ksa()
 - Any amount mentioned → get_best_rail_ksa() + check_absher_and_cdd()
 - Salary mentioned → check_wps_compliance()
 - Suspicious keywords → fortress_scan_ksa()
-- Rate/exchange query → google_search
 
 SAMA RULES — NON-NEGOTIABLE:
 • 15% VAT on service fee ONLY — never on principal
@@ -583,7 +581,6 @@ LANGUAGE:
 • Always provide both EN + UR versions of compliance notices
 """,
     tools=[
-        google_search,
         get_corridor_rules_ksa,
         calculate_vat_ksa,
         get_best_rail_ksa,

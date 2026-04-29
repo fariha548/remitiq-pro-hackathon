@@ -21,7 +21,6 @@ import firebase_admin
 from firebase_admin import credentials, firestore
 
 from google.adk.agents import Agent
-from google.adk.tools import google_search
 
 # ─────────────────────────────────────────────
 # LOGGING
@@ -520,7 +519,6 @@ china_agent = Agent(
         get_academic_calendar_advice,
         get_seasonal_alerts,
         # Live data
-        google_search,
     ],
 )
 
