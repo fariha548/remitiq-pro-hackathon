@@ -515,6 +515,10 @@ body::after {
 ::-webkit-scrollbar { width: 3px; }
 ::-webkit-scrollbar-track { background: transparent; }
 ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.07); border-radius: 2px; }
+@keyframes ticker {
+  0%   { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
 </style>
 </head>
 <body>
@@ -638,6 +642,11 @@ body::after {
         Gemini 2.5 Flash · Vertex AI · Cloud Run · Firestore
       </span>
     </div>
+  </div><!-- LIVE RATE TICKER -->
+  <div style="background:var(--obsidian-2);border-top:1px solid var(--glass-border);padding:5px 16px;overflow:hidden;white-space:nowrap;">
+    <span id="tickerInner" style="font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--gold);display:inline-block;animation:ticker 30s linear infinite;">
+      SAR/PKR 75.4 ↑ &nbsp;·&nbsp; AED/PKR 77.8 → &nbsp;·&nbsp; CNY/PKR 40.2 ↑ &nbsp;·&nbsp; PHP/PKR 1.22 → &nbsp;·&nbsp; BDT/PKR 0.65 ↓ &nbsp;·&nbsp; IDR/PKR 0.0045 → &nbsp;·&nbsp; SAR/PKR 75.4 ↑ &nbsp;·&nbsp; AED/PKR 77.8 → &nbsp;·&nbsp; CNY/PKR 40.2 ↑
+    </span>
   </div>
 
   <!-- FORTRESS PANEL -->
