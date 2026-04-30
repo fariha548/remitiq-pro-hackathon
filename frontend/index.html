@@ -1,6 +1,9 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=JetBrains+Mono:wght@300;400;500&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>RemitIQ 360 — Command Center</title>
@@ -38,6 +41,7 @@ body {
   background: var(--obsidian);
   color: var(--text-primary);
   font-family: 'Syne', sans-serif;
+  font-size: 14px;
 }
 
 /* Grid background */
@@ -139,7 +143,7 @@ body::after {
   margin-top: 54px;
   display: grid;
   grid-template-columns: 1fr minmax(0, 390px);
-  grid-template-rows: 50px 1fr 58px;
+  grid-template-rows: 50px 1fr 58px 28px;
   height: calc(100vh - 54px);
 }
 
@@ -157,11 +161,12 @@ body::after {
   display: flex; align-items: center; gap: 7px;
   padding: 7px 14px; border-radius: 7px;
   cursor: pointer; transition: all 0.18s;
-  font-size: 12.5px; font-weight: 700;
+  font-size: 14px; font-weight: 700;
   color: var(--text-dim);
   border: 1px solid transparent;
   background: transparent;
   font-family: 'Syne', sans-serif;
+  font-size: 14px;
   user-select: none;
 }
 .tab:hover { color: var(--text-secondary); background: var(--glass); }
@@ -320,6 +325,7 @@ body::after {
   color: var(--text-primary);
   font-size: 12.5px;
   font-family: 'Syne', sans-serif;
+  font-size: 14px;
   outline: none;
   transition: border-color 0.2s, box-shadow 0.2s;
 }
@@ -337,6 +343,7 @@ body::after {
   font-weight: 800; font-size: 12px;
   cursor: pointer;
   font-family: 'Syne', sans-serif;
+  font-size: 14px;
   transition: all 0.18s;
   letter-spacing: 0.04em;
   box-shadow: 0 0 16px rgba(245,158,11,0.2);
@@ -530,6 +537,7 @@ body::after {
   100% { transform: translateX(-50%); }
 }
 </style>
+<link rel="stylesheet" href="/static/remitiq360-styles.css">
 </head>
 <body>
 
@@ -653,7 +661,7 @@ body::after {
       </span>
     </div>
   </div><!-- LIVE RATE TICKER -->
-  <div style="background:var(--obsidian-2);border-top:1px solid var(--glass-border);padding:5px 16px;overflow:hidden;white-space:nowrap;">
+  <div style="background:var(--obsidian-2);border-top:1px solid var(--glass-border);padding:5px 16px;overflow:hidden;white-space:nowrap;grid-column:1 / -1;grid-row:4;">
     <span id="tickerInner" style="font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--gold);display:inline-block;animation:ticker 30s linear infinite;">
       SAR/PKR 75.4 ↑ &nbsp;·&nbsp; AED/PKR 77.8 → &nbsp;·&nbsp; CNY/PKR 40.2 ↑ &nbsp;·&nbsp; PHP/PKR 1.22 → &nbsp;·&nbsp; BDT/PKR 0.65 ↓ &nbsp;·&nbsp; IDR/PKR 0.0045 → &nbsp;·&nbsp; SAR/PKR 75.4 ↑ &nbsp;·&nbsp; AED/PKR 77.8 → &nbsp;·&nbsp; CNY/PKR 40.2 ↑
     </span>
